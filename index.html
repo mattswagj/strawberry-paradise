@@ -49,10 +49,7 @@
   section{padding:64px 20px}
   .wrap{max-width:1080px;margin:0 auto}
 
-  /* language helper: hide the inactive language */
-  [data-es],[data-en]{display:inline}
-  body.lang-en [data-es]{display:none}
-  body.lang-es [data-en]{display:none}
+  /* bilingual text is injected by JS (applyLang) from data-es / data-en attributes */
 
   .eyebrow{
     text-transform:uppercase;letter-spacing:.22em;font-size:.72rem;
@@ -398,9 +395,9 @@
       <div class="tile">🍓</div><div class="tile">🍫</div><div class="tile">🎂</div><div class="tile">🍰</div>
       <div class="tile">🧁</div><div class="tile">❤️</div><div class="tile">🍓</div><div class="tile">🎁</div>
     </div>
-    <p class="ig-note"
+    <p class="ig-note"><span
        data-es="Mira todas nuestras creaciones en Instagram → "
-       data-en="See all our creations on Instagram → "><a href="https://www.instagram.com/strawberryparadise4/" target="_blank" rel="noopener" style="color:var(--berry);font-weight:700">@strawberryparadise4</a></p>
+       data-en="See all our creations on Instagram → "></span><a href="https://www.instagram.com/strawberryparadise4/" target="_blank" rel="noopener" style="color:var(--berry);font-weight:700">@strawberryparadise4</a></p>
   </div>
 </section>
 
@@ -543,13 +540,21 @@
 <a class="wa-float" href="https://wa.me/message/K5QE2VIUBYMGL1" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 
 <script>
+  function applyLang(lang){
+    document.querySelectorAll('[data-es]').forEach(function(el){
+      var t = el.getAttribute('data-'+lang);
+      if(t!==null) el.textContent = t;
+    });
+  }
   function setLang(lang){
     document.body.classList.remove('lang-es','lang-en');
     document.body.classList.add('lang-'+lang);
     document.documentElement.lang = lang;
     document.getElementById('btn-es').classList.toggle('active', lang==='es');
     document.getElementById('btn-en').classList.toggle('active', lang==='en');
+    applyLang(lang);
   }
+  applyLang('es'); // initial render (Spanish primary)
   // close mobile menu on link click
   document.querySelectorAll('#navLinks a').forEach(a=>
     a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open')));
